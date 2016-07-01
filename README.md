@@ -2,13 +2,13 @@
 a short  and simple script to download (grab) files off the directory listing of a given website.
 
 Usage:
-./grab.sh http://foo.com/directory
+./grab.sh http://foo.com/directory/
 
 It creates a directory and log file at ${HOME}/logs/grab/grab.log
 
 It will also compare the given URL to the log file to see if you've grabbed this site before, and give you an option to continue anyways or exit.
 
-The default download directory is "/cygdrive/f/TEMP/". Be sure to update this to wherever you want to store the contents of the website. 
+The default download directory is "/cygdrive/f/TEMP/". Be sure to update this to wherever you want to store the contents of the website. If you would like to change it a lot, it's probably better to make it a second variable. 
 
 It uses wget with the following options:
 
