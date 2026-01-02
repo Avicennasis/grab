@@ -1,30 +1,71 @@
 # grab
-a short  and simple script to download (grab) files off the directory listing of a given website.
 
-Usage:
-./grab.sh http://foo.com/directory/
+A modern, robust, and polite shell script wrapper for `wget` designed to download files from web directory listings and thread pages (e.g., 4chan).
 
-It creates a directory and log file at ${HOME}/logs/grab/grab.log
+## Features
 
-It will also compare the given URL to the log file to see if you've grabbed this site before, and give you an option to continue anyways or exit.
+- **Robust**: Validates inputs, handles errors strictly, and uses safe filename encoding.
+- **Polite**: Respects `robots.txt` by default, includes rate limiting, random delays, and a configurable User-Agent.
+- **Flexible**: Supports recursive downloads, file filtering (include/exclude), and custom output directories.
+- **Cross-Platform**: Works on Linux, macOS, and Windows (via WSL/Git Bash).
 
-The default download directory is "/cygdrive/f/TEMP/". Be sure to update this to wherever you want to store the contents of the website. If you would like to change it a lot, it's probably better to make it a second variable. 
+## Usage
 
-It uses wget with the following options:
+```bash
+./grab.sh [OPTIONS] <URL> [OUTPUT_DIR]
+```
 
-1. -e robots=off 
- * This tells wget to ignore robots.txt
-2. --recursive
- * This tells wget to scan the current directory and all subdirectories 
-3. --no-parent
- * This tells wget to not follow the link to the parent directory
-4. --reject="index.html*"
- * This doesn't download index.html files
-5. --user-agent=Mozilla/5.0 
- * A user-agent to send to the website
-6. --wait=12 
- * wait 12 seconds (ish)
-7. --random-wait 
- * This varies the wait time from *0.5 to *1.5, or 6 to 18 seconds, per --wait=12
-8. --directory-prefix=/cygdrive/f/TEMP/
- * The directory to dump into (see note above)
+### Examples
+
+**1. Basic Directory Download**
+Download all files from a directory listing to a local folder (defaults to `./domain/path`).
+```bash
+./grab.sh https://example.com/files/
+```
+
+**2. Download Images from a Thread (e.g., 4chan)**
+Use `-H` to span hosts (needed for image CDNs), `-r -l 1` to grab linked files, and `-A` to filter for images.
+```bash
+./grab.sh -r -l 1 -H -A jpg,png,webm https://boards.4chan.org/wg/thread/12345
+```
+
+**3. Polite Scraping**
+Limit rate to 200KB/s and wait 2 seconds between requests.
+```bash
+./grab.sh --rate-limit 200k --delay 2 https://example.com/archive/
+```
+
+**4. Dry Run**
+See what would be downloaded without actually doing it.
+```bash
+./grab.sh --dry-run https://example.com/
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `-r`, `--recursive` | Enable recursive retrieval (default: OFF). |
+| `-l`, `--max-depth N` | Set recursion maximum depth level (default: 1 if -r is set). |
+| `-A`, `--include PATTERN` | Comma-separated list of file extensions/patterns to accept (e.g. `jpg,png`). |
+| `-R`, `--exclude PATTERN` | Comma-separated list of file extensions/patterns to reject. |
+| `--dry-run` | Show what would be done without downloading. |
+| `-c`, `--continue` | Resume partially downloaded files. |
+| `--overwrite` | Overwrite existing files (default: skip if exists). |
+| `--rate-limit RATE` | Limit download rate (e.g. `200k`, `1m`). |
+| `--delay SECONDS` | Wait SECONDS between retrievals (default: 1). |
+| `--timeout SECONDS` | Network timeout in seconds (default: 10). |
+| `-U`, `--user-agent STR` | Set User-Agent string. |
+| `-H`, `--span-hosts` | Enable spanning across hosts (needed for some CDNs). |
+| `--ignore-robots` | Ignore robots.txt (NOT RECOMMENDED). |
+| `-h`, `--help` | Show help message. |
+
+## Safety & Ethics
+
+- **No Parent**: The script automatically sets `--no-parent` to prevent ascending the directory tree.
+- **Robots.txt**: Respected by default. Use `--ignore-robots` only if you have permission.
+- **Guardrails**: Default recursion depth is limited.
+
+## License
+
+MIT
