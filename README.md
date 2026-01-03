@@ -67,5 +67,6 @@ See what would be downloaded without actually doing it.
 - **Guardrails**: Default recursion depth is limited.
 
 ## License
-
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Credits
+**Author:** Léon "Avic" Simmons ([@Avicennasis](https://github.com/Avicennasis))
